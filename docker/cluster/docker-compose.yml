@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  local-cluster-scylla1:
+    image: scylladb/scylla
+    container_name: local-cluster-scylla1
+
+  local-cluster-scylla2:
+    image: scylladb/scylla
+    container_name: local-cluster-scylla2
+    command: --seeds=local-cluster-scylla1
+
+  local-cluster-scylla3:
+    image: scylladb/scylla
+    container_name: local-cluster-scylla3
+    command: --seeds=local-cluster-scylla1

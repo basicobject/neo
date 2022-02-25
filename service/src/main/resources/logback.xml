@@ -1,0 +1,16 @@
+<configuration>
+
+    <!-- APPENDERS -->
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%level - %c{40}: - %message%n%xException</pattern>
+        </encoder>
+    </appender>
+
+    <!-- LOGGERS -->
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

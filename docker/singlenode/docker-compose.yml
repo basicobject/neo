@@ -1,0 +1,7 @@
+version: '3'
+services:
+  scylladb:
+    image: scylladb/scylla:4.6.dev-0.20210802.0eb2eb1b4
+    container_name: singlenode-scylla
+    ports:
+      - "9042:9042"
