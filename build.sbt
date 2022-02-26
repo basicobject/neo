@@ -8,7 +8,8 @@ val grpc = Seq(
 )
 
 val cassandra = Seq(
-  "com.datastax.oss" % "java-driver-core" % "4.13.0"
+  "com.datastax.oss" % "java-driver-core" % "4.13.0",
+  "com.datastax.oss" % "java-driver-query-builder" % "4.13.0"
 )
 
 val other = Seq(
