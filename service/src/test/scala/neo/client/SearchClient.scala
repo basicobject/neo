@@ -11,9 +11,9 @@ object SearchClient extends App {
       .build()
 
   val searchClient = NameServiceGrpc.blockingStub(channel)
-  val response = searchClient.search(SearchRequest(query = "Parrot"))
-  if (response.results.length > 0)
-    response.results.foreach(result => println(result))
+  val results = searchClient.search(SearchRequest(query = "kiwi")).toSeq
+  if (results.nonEmpty)
+    results.foreach(result => println(result))
   else println("No results found")
 
 }

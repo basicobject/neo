@@ -4,15 +4,11 @@ option java_package = "neo.proto";
 option java_multiple_files = true;
 
 service NameService {
-  rpc Search(SearchRequest) returns (SearchResponse) {};
+  rpc Search(SearchRequest) returns (stream SearchResult) {};
 }
 
 message SearchRequest {
   string query = 1;
-}
-
-message SearchResponse {
-  repeated SearchResult results = 1;
 }
 
 message SearchResult {
@@ -20,15 +16,10 @@ message SearchResult {
   string context = 2;
 }
 
-
 service HealthCheckService {
   rpc Ping(PingRequest) returns (PingResponse) {};
 }
 
-message PingRequest {
-  string text = 1;
-}
+message PingRequest {}
 
-message PingResponse {
-  string text = 1;
-}
+message PingResponse {}

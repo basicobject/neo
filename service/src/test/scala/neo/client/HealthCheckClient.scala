@@ -7,7 +7,7 @@ object HealthCheckClient extends App {
   val channel: ManagedChannel =
     ManagedChannelBuilder.forAddress("localhost", 3333).usePlaintext().build()
 
-  val ping = PingRequest("PING")
+  val ping = PingRequest()
 
   val stub = neo.proto.messages.HealthCheckServiceGrpc.blockingStub(channel)
 

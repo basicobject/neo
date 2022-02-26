@@ -14,7 +14,7 @@ final class NeoHealthCheckService @Inject() (ec: ExecutionContext)
   private object service extends HealthCheckServiceGrpc.HealthCheckService {
     override def ping(request: PingRequest): Future[PingResponse] = {
       logger.info("Got ping request")
-      Future.successful(PingResponse("PONG"))
+      Future.successful(PingResponse())
     }
   }
 

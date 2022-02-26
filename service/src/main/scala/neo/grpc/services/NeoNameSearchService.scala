@@ -2,14 +2,10 @@ package neo.grpc.services
 
 import com.typesafe.scalalogging.StrictLogging
 import io.grpc.ServerServiceDefinition
+import io.grpc.stub.StreamObserver
 import neo.NeoName
 import neo.grpc.ServiceBinding
-import neo.proto.messages.{
-  NameServiceGrpc,
-  SearchRequest,
-  SearchResponse,
-  SearchResult
-}
+import neo.proto.messages.{NameServiceGrpc, SearchRequest, SearchResult}
 import neo.search.NeoSearchEngine
 
 import javax.inject.Inject
@@ -23,21 +19,27 @@ final class NeoNameSearchService @Inject() (
     with StrictLogging {
 
   object service extends NameServiceGrpc.NameService {
-    override def search(request: SearchRequest): Future[SearchResponse] =
+
+    override def search(
+        request: SearchRequest,
+        responseObserver: StreamObserver[SearchResult]
+    ): Unit = {
+      def toSearchResult(result: NeoName) =
+        SearchResult(result.name, result.context)
+
       searchEngine
         .search(request.query)
         .map {
           case Right(values) =>
-            SearchResponse(values.map(toSearchResult))
+            values.map(toSearchResult)
           case Left(error) =>
             logger.error(error.message)
-            SearchResponse(Seq.empty)
+            Seq.empty
         }
+        .map(_.foreach(responseObserver.onNext))
+        .onComplete(_ => responseObserver.onCompleted())
+    }
 
-    private def toSearchResult(result: NeoName): SearchResult = SearchResult(
-      result.name,
-      result.context
-    )
   }
 
   override def binding(): ServerServiceDefinition =
