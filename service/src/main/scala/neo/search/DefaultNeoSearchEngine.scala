@@ -12,7 +12,7 @@ final class DefaultNeoSearchEngine @Inject() (repo: NameRepository)(implicit
 
   def search(
       queryString: String
-  ): Future[Either[NeoServiceError, Seq[NeoName]]] = {
+  ): Future[Either[NeoServiceError, Seq[NeoSearchResult]]] = {
 
     def search(queries: Set[QueryString]) = {
       val inProgressSearches = queries.map(repo.search).toSeq

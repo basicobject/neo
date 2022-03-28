@@ -27,7 +27,10 @@ final class NettyGrpcServer(
         sys.exit(-1)
     }
 
-    sys.addShutdownHook(server.shutdown())
+    sys.addShutdownHook({
+      logger.info(s"Shutting down ${this.getClass.getSimpleName}")
+      server.shutdown()
+    })
   }
 
   override def stop(): Unit = server.shutdown()

@@ -3,7 +3,7 @@ package neo.grpc.services
 import com.typesafe.scalalogging.StrictLogging
 import io.grpc.ServerServiceDefinition
 import io.grpc.stub.StreamObserver
-import neo.NeoName
+import neo.NeoSearchResult
 import neo.grpc.ServiceBinding
 import neo.proto.messages.{NameServiceGrpc, SearchRequest, SearchResult}
 import neo.search.NeoSearchEngine
@@ -24,7 +24,7 @@ final class NeoNameSearchService @Inject() (
         request: SearchRequest,
         responseObserver: StreamObserver[SearchResult]
     ): Unit = {
-      def toSearchResult(result: NeoName) =
+      def toSearchResult(result: NeoSearchResult) =
         SearchResult(result.name, result.context)
 
       searchEngine

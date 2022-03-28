@@ -1,11 +1,11 @@
 package neo.search
 
-import neo.{NeoServiceError, NeoName}
+import neo.{NeoServiceError, NeoSearchResult}
 
 import scala.concurrent.Future
 
 trait NeoSearchEngine {
   def search(
       queryString: String
-  ): Future[Either[NeoServiceError, Seq[NeoName]]]
+  ): Future[Either[NeoServiceError, Seq[NeoSearchResult]]]
 }

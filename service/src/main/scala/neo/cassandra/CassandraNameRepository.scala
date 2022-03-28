@@ -8,7 +8,7 @@ import com.datastax.oss.driver.api.querybuilder.QueryBuilder.{
 }
 import neo.search.NameRepository
 import neo.util.TimedExecution
-import neo.{NeoName, QueryString}
+import neo.{NeoSearchResult, QueryString}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -24,7 +24,7 @@ final class CassandraNameRepository @Inject() (cqlSession: CqlSession)(implicit
 
   private val simpleName = this.getClass.getSimpleName
 
-  override def search(name: QueryString): Future[Seq[NeoName]] = {
+  override def search(name: QueryString): Future[Seq[NeoSearchResult]] = {
     timedFuture(simpleName, "search") {
       cqlSession
         .executeAsync(SelectStatement.bind(name.underlying))
@@ -36,10 +36,15 @@ final class CassandraNameRepository @Inject() (cqlSession: CqlSession)(implicit
 
   private val SelectStatement = cqlSession.prepare(SelectQuery)
 
-  private def toNeoNameFn: Row => NeoName = row => {
-    NeoName(
+  private def toNeoNameFn: Row => NeoSearchResult = row => {
+    NeoSearchResult(
       name = row.getString(Schema.Name),
       context = row.getString(Schema.Context),
+      path = row.getString(Schema.Path),
+      language = row.getString(Schema.Language),
+      lineNo = row.getInt(Schema.LineNo),
+      filename = row.getString(Schema.Filename),
+      extension = Option(row.getString(Schema.Filename)),
       score = row.getLong(Schema.Score)
     )
   }
@@ -56,6 +61,11 @@ object CassandraNameRepository {
     val Table = "names"
     val Name = "name"
     val Context = "context"
+    val Path = "path"
+    val Language = "lang"
+    val LineNo = "line_no"
+    val Filename = "filename"
+    val extension = "extension"
     val Score = "score"
   }
 }
