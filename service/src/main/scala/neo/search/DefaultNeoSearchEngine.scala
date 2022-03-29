@@ -6,7 +6,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-final class DefaultNeoSearchEngine @Inject() (repo: NameRepository)(implicit
+final class DefaultNeoSearchEngine @Inject() (repo: NeoSearchRepo)(implicit
     ec: ExecutionContext
 ) extends NeoSearchEngine {
 

@@ -4,8 +4,10 @@ import neo.{NeoSearchResult, QueryString}
 
 import scala.concurrent.Future
 
-trait NameRepository {
+trait NeoSearchRepo {
+  def insert(neoSearchResult: NeoSearchResult): Unit
+
   def search(
-      name: QueryString
+      query: QueryString
   ): Future[Seq[NeoSearchResult]]
 }

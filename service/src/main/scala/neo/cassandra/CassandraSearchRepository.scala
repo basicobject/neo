@@ -6,7 +6,7 @@ import com.datastax.oss.driver.api.querybuilder.QueryBuilder.{
   bindMarker,
   selectFrom
 }
-import neo.search.NameRepository
+import neo.search.NeoSearchRepo
 import neo.util.TimedExecution
 import neo.{NeoSearchResult, QueryString}
 
@@ -15,19 +15,19 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.jdk.CollectionConverters.IterableHasAsScala
 import scala.jdk.FutureConverters.CompletionStageOps
 
-final class CassandraNameRepository @Inject() (cqlSession: CqlSession)(implicit
-    ec: ExecutionContext
-) extends NameRepository
+final class CassandraSearchRepository @Inject() (cqlSession: CqlSession)(
+    implicit ec: ExecutionContext
+) extends NeoSearchRepo
     with TimedExecution {
 
-  import CassandraNameRepository._
+  import CassandraSearchRepository._
 
   private val simpleName = this.getClass.getSimpleName
 
-  override def search(name: QueryString): Future[Seq[NeoSearchResult]] = {
+  override def search(query: QueryString): Future[Seq[NeoSearchResult]] = {
     timedFuture(simpleName, "search") {
       cqlSession
-        .executeAsync(SelectStatement.bind(name.underlying))
+        .executeAsync(SelectStatement.bind(query.underlying))
         .asScala
         .map(_.currentPage().asScala.map(toNeoNameFn))
         .map(_.toSeq)
@@ -48,9 +48,11 @@ final class CassandraNameRepository @Inject() (cqlSession: CqlSession)(implicit
       score = row.getLong(Schema.Score)
     )
   }
+
+  override def insert(neoSearchResult: NeoSearchResult): Unit = ???
 }
 
-object CassandraNameRepository {
+object CassandraSearchRepository {
   private val SelectQuery = selectFrom(Schema.Table)
     .columns(Schema.Name, Schema.Context, Schema.Score)
     .whereColumn(Schema.Name)
@@ -59,7 +61,7 @@ object CassandraNameRepository {
 
   object Schema {
     val Table = "names"
-    val Name = "name"
+    val Name = "query"
     val Context = "context"
     val Path = "path"
     val Language = "lang"

@@ -2,8 +2,8 @@ package neo
 
 import com.datastax.oss.driver.api.core.CqlSession
 import com.google.inject.AbstractModule
-import neo.cassandra.{CassandraNameRepository, CqlSessionProvider}
-import neo.search.{DefaultNeoSearchEngine, NameRepository, NeoSearchEngine}
+import neo.cassandra.{CassandraSearchRepository, CqlSessionProvider}
+import neo.search.{DefaultNeoSearchEngine, NeoSearchRepo, NeoSearchEngine}
 
 import scala.concurrent.ExecutionContext
 
@@ -12,6 +12,6 @@ class MainModule extends AbstractModule {
     bind(classOf[ExecutionContext]).toInstance(ExecutionContext.global)
     bind(classOf[NeoSearchEngine]).to(classOf[DefaultNeoSearchEngine])
     bind(classOf[CqlSession]).toProvider(classOf[CqlSessionProvider])
-    bind(classOf[NameRepository]).to(classOf[CassandraNameRepository])
+    bind(classOf[NeoSearchRepo]).to(classOf[CassandraSearchRepository])
   }
 }
